@@ -1,0 +1,31 @@
+name: 'Determine PR label based on parent repository'
+description: 'This action selects the PR label to use, based on which parent repo triggered this dependency bump.'
+inputs:
+  parent-repo:
+    description: 'The parent repository that triggered the dependency upgrade'
+    required: true
+outputs:
+  label: ${{ steps.get-label.outputs.label }}
+runs:
+  using: "composite"
+  steps:
+    - name: Get Label
+      shell: bash
+      id: get-label
+      env:
+        REPO: ${{ inputs.parent-repo }}
+      run: |
+        declare -A LABELS=(
+          [dolt]="dolt-bump"
+          [bounties]="bounties-bump"
+          [doltgresql]="doltgresql-bump"
+        )
+
+        label="${LABELS[$REPO]}"
+
+        if [ -z "$label" ]; then
+          echo "$REPO is unsupported"
+          exit 1
+        else
+          echo "label=$label" >> "$GITHUB_OUTPUT"
+        fi
