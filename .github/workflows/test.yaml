@@ -1,0 +1,33 @@
+name: Test Actions
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+
+concurrency:
+  group: test-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test_get_pr_label_action:
+    runs-on: ubuntu-latest
+    name: Test determine-pr-label-based-on-parent-repo Composite Action
+    steps:
+      - uses: actions/checkout@v4
+      - id: get-label
+        uses: ./determine-pr-label-based-on-parent-repo
+        with:
+          parent-repo: "dolt"
+      - name: Assert Label Names Match
+        shell: bash
+        run: |
+          if [ "$EXPECTED_LABEL" != "$ACTUAL_LABEL" ]; then
+            echo "failed to get correct label name"
+            exit 1;
+          fi
+        env:
+          EXPECTED_LABEL: "dolt-bump"
+          ACTUAL_LABEL: ${{ steps.get-label.outputs.label }}

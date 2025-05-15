@@ -5,7 +5,9 @@ inputs:
     description: 'The parent repository that triggered the dependency upgrade'
     required: true
 outputs:
-  label: ${{ steps.get-label.outputs.label }}
+  label:
+    description: 'The label name to apply'
+    value: ${{ steps.get-label.outputs.label }}
 runs:
   using: "composite"
   steps:
@@ -17,8 +19,8 @@ runs:
       run: |
         declare -A LABELS=(
           [dolt]="dolt-bump"
-          [bounties]="bounties-bump"
           [doltgresql]="doltgresql-bump"
+          [vitess]="vitess-bump"
         )
 
         label="${LABELS[$REPO]}"
