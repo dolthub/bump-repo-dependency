@@ -21,6 +21,8 @@ runs:
           [dolt]="dolt-bump"
           [doltgresql]="doltgresql-bump"
           [vitess]="vitess-bump"
+          [doltlite-go]="doltlite-go-bump"
+          [doltlite-driver]="doltlite-driver-bump"
         )
 
         label="${LABELS[$REPO]}"
